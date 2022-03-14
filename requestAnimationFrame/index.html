@@ -1,0 +1,86 @@
+<html>
+  <head>
+    <title></title>
+    <style type="text/css">
+      .box {
+        width: 100px;
+        height: 100px;
+        margin: 20px;
+      }
+      #box1 {
+        background: green;
+      }
+      #box2 {
+        background: blue;
+      }
+      #box3 {
+        background: gray;
+      }
+      #box4 {
+        background: purple;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="box" id="box1">setInterval</div>
+    <div class="box" id="box2">requestAnimationFrame</div>
+    <div class="box" id="box3">setInterval</div>
+    <div class="box" id="box4">requestAnimationFrame</div>
+  </body>
+  <script type="text/javascript">
+    /**
+     *
+     * setInterval 与 requestAnimationFrame 对比
+     *
+     * */
+
+    var left1 = 0;
+    var box1 = document.getElementById("box1");
+    var animate1Callback = function () {
+      box1.style.marginLeft = ++left1 + "px";
+      if (left1 === 500) {
+        clearInterval(interval1);
+      }
+    };
+    var interval1 = setInterval(animate1Callback, 1000 / 60);
+
+    var left2 = 0;
+    var box2 = document.getElementById("box2");
+    var animate2Callback = function () {
+      box2.style.marginLeft = ++left2 + "px";
+      if (left2 === 500) {
+        cancelAnimationFrame(requestAnimationFrame1);
+      } else {
+        requestAnimationFrame1 = requestAnimationFrame(animate2Callback);
+      }
+    };
+    var requestAnimationFrame1 = window.requestAnimationFrame(animate2Callback);
+
+    var color = ["green", "red", "blue", "yellow"];
+    var box3 = document.getElementById("box3");
+    var index1 = 0;
+    var animate3Callback = function () {
+      index1++;
+      box3.style.backgroundColor = color[index1 % 3];
+      if (index1 === 800) {
+        clearInterval(interval3);
+      }
+    };
+    var interval3 = setInterval(animate3Callback, 1000 / 100); // 10ms
+
+    var color = ["green", "red", "blue", "yellow"];
+    var box4 = document.getElementById("box4");
+    var index2 = 0;
+    var animate4Callback = function () {
+      index2++;
+      box4.style.backgroundColor = color[index2 % 3];
+      if (index2 === 500) {
+        cancelAnimationFrame(requestAnimationFrame2);
+      } else {
+        requestAnimationFrame2 = requestAnimationFrame(animate4Callback);
+      }
+    };
+    var requestAnimationFrame2 = requestAnimationFrame(animate4Callback); // ~17ms  (1000ms / 60帧)
+  </script>
+</html>
